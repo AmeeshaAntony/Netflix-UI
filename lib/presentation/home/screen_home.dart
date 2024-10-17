@@ -10,6 +10,7 @@ import 'package:netflix1/presentation/home/widgets/num_title_card.dart';
 //import 'package:netflix1/presentation/widgets/main_title.dart';
 import 'package:netflix1/presentation/widgets/main_title_card.dart';
 
+ValueNotifier<bool> scrollNotifier = ValueNotifier(true);
 
 class ScreenHome extends StatelessWidget {
   const ScreenHome({super.key});
@@ -17,51 +18,132 @@ class ScreenHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: NotificationListener<UserScrollNotification>(
-          onNotification: (notification) {
-            final ScrollDirection direction = notification.direction;
-            return true;
-          },
-          child: const Column(
-            children: [
-              BackgroundCard(),
-              MainTitleCard(
-                title: 'Released in the past year',
-              ),
-              kheight,
-              MainTitleCard(
-                title: 'Trending now',
-              ),
-              kheight,
-              NumTitleCard(),
-              kheight,
-              MainTitleCard(
-                title: 'Tense Dramas',
-              ),
-              kheight,
-              MainTitleCard(title: 'South Indian Cinemas')
-            ],
-          ),
-        ),
-      ),
-    );
+        body: ValueListenableBuilder(
+            valueListenable: scrollNotifier,
+            builder: (BuildContext context, index, _) {
+              return SingleChildScrollView(
+                child: NotificationListener<UserScrollNotification>(
+                  onNotification: (notification) {
+                    final ScrollDirection direction = notification.direction;
+                    print(direction);
+                    if (direction == ScrollDirection.reverse) {
+                      scrollNotifier.value = false;
+                    } else if (direction == ScrollDirection.forward) {
+                      scrollNotifier.value = true;
+                    }
+                    return true;
+                  },
+                  child: Stack(
+                    children: [
+                      ListView(
+                        shrinkWrap: true,
+                        //physics: const NeverScrollableScrollPhysics(),
+                        children: const [
+                          BackgroundCard(),
+                          MainTitleCard(
+                            title: 'Released in the past year',
+                          ),
+                          SizedBox(
+                              height: 10), // replaced kheight with SizedBox
+                          MainTitleCard(
+                            title: 'Trending now',
+                          ),
+                          MainTitleCard(
+                            title: 'Trending now',
+                          ),
+                          SizedBox(
+                              height: 10), // replaced kheight with SizedBox
+                          MainTitleCard(
+                            title: 'Trending now',
+                          ),
+                          NumTitleCard(),
+                          SizedBox(
+                              height: 10), // replaced kheight with SizedBox
+                          MainTitleCard(
+                            title: 'Trending now',
+                          ),
+                          MainTitleCard(
+                            title: 'Tense Dramas',
+                          ),
+                          SizedBox(
+                              height: 10), // replaced kheight with SizedBox
+                          MainTitleCard(
+                            title: 'Trending now',
+                          ),
+                          MainTitleCard(title: 'South Indian Cinemas')
+                        ],
+                      ),
+                      scrollNotifier.value == true
+                          ? AnimatedContainer(
+                            
+                              width: double.infinity,
+                              height: 80,
+                              color: Colors.transparent,
+                              duration: Duration(milliseconds: 500),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Image.network(
+                                        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHoxdoCIm725ct_McxxeTLB1MkYuXBWmQeFQ&s',
+                                        width: 40,
+                                        height: 40,
+                                        errorBuilder:
+                                            (context, error, StackTrace) {
+                                          return Icon(Icons.error);
+                                        },
+                                      ),
+                                      const Spacer(),
+                                      const Icon(
+                                        Icons.cast,
+                                        color: Colors.white,
+                                      ),
+                                      kwidth,
+                                      Container(
+                                        width: 30,
+                                        height: 30,
+                                        color: Colors.blue,
+                                      ),
+                                      kwidth,
+                                    ],
+                                  ),
+                                  const Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                    Text("TV Shows",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                                    Text("Movies",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                                    Text("Categories",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                                  ],)
+                                ],
+                              ))
+                          : SizedBox.shrink(),
+                    ],
+                  ),
+                ),
+              );
+            }));
   }
 
   TextButton _Playbutton() {
     return TextButton.icon(
-                        style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.white)),
-                        onPressed: () {},
-                        icon: const Icon(Icons.play_arrow,size: 25,color: Colors.black,),
-                        label: const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          child: Text('Play',style: TextStyle(fontSize: 20,color: Colors.black),),
-                        ),
-                      );
+      style:
+          ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white)),
+      onPressed: () {},
+      icon: const Icon(
+        Icons.play_arrow,
+        size: 25,
+        color: Colors.black,
+      ),
+      label: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Text(
+          'Play',
+          style: TextStyle(fontSize: 20, color: Colors.black),
+        ),
+      ),
+    );
   }
 }
-
-
 
 class Maincard extends StatelessWidget {
   const Maincard({
