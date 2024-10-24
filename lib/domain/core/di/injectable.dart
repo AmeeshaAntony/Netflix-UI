@@ -6,4 +6,8 @@ final getIt = GetIt.instance;
 Future<void> configureInjection() async{
     await $initGetIt(getIt, environment: Environment.prod);
 }
-
+Future<void> $initGetIt(GetIt getIt, {String? environment}) async {
+  final gh = GetItHelper(getIt, environment);
+  // Example service registration:
+  //gh.registerSingleton<MyService>(MyService());
+}
