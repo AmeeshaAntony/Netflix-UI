@@ -48,6 +48,7 @@ class Section2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
+    BlocProvider.of<DownloadsBloc>().add();
     return Column(
       children: [
         const Text(
